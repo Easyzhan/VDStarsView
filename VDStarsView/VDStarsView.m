@@ -6,7 +6,7 @@
 //  Copyright © 2016年 Zin_戦. All rights reserved.
 //
 #define PMWidth [UIScreen mainScreen].bounds.size.width
-#define HWColor(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
+#define VDColor(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
 
 #import "VDStarsView.h"
 
@@ -17,6 +17,7 @@
     UIView *viewV;
 }
 @property (nonatomic,strong)UIButton *btn;
+
 @end
 
 @implementation VDStarsView
@@ -64,32 +65,41 @@
 -(void) creatXing {
     
     viewV = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height/2 -25, self.frame.size.width, self.frame.size.height)];
-    viewV.backgroundColor = [UIColor whiteColor];
+    viewV.userInteractionEnabled = YES;
+    //添加手势
+    
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(event:)];
+    //将手势添加到需要相应的view中去
+    
+    [viewV addGestureRecognizer:tapGesture];
+    //选择触发事件的方式（默认单机触发)
+    [tapGesture setNumberOfTapsRequired:1];
+    
+    viewV.backgroundColor = VDColor(200, 160, 190);
     [self addSubview:viewV];
     
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, viewV.frame.size.height/2 -7, 50, 15)];
-    lab.text = @" 综合评分:";
-    lab.textAlignment = NSTextAlignmentLeft;
+    lab.text = [NSString stringWithFormat:@" %@:",_exText];
+    lab.textAlignment = NSTextAlignmentCenter;
     lab.font = [UIFont systemFontOfSize:10];
     [viewV addSubview:lab];
     
-    NSInteger guji = 4;
     NSInteger perStarWidth = (viewV.frame.size.width - lab.frame.size.width)/5;
     for (int i = 0; i < 5; i++) {
         
         imageV = [[UIImageView alloc] initWithFrame:CGRectMake(lab.frame.size.width + perStarWidth * i, viewV.frame.size.height/2 -15, perStarWidth, perStarWidth)];
-        imageV.image = [UIImage imageNamed:@"12345"];
+        imageV.image = [UIImage imageNamed:@"tmst"];
         imageV.tag = i;
         [viewV addSubview:imageV];
         
-        if (imageV.tag <= _starsNum - 1&&_starsNum<=guji) {
-            imageV.image = [UIImage imageNamed:@"123456"];
-        }else if(guji>_starsNum&&imageV.tag<guji){
+        if (imageV.tag <= _starsNum - 1&&_starsNum<=_gujiNum) {
+            imageV.image = [UIImage imageNamed:@"str"];
+        }else if(_gujiNum>_starsNum&&imageV.tag<_gujiNum){
             imageV.image = [UIImage imageNamed:@"star"];
         }
         else {
             
-            imageV.image = [UIImage imageNamed:@"12345"];
+            imageV.image = [UIImage imageNamed:@"tmst"];
         }
         
     }
@@ -128,4 +138,22 @@
     }
     
 }
+
+#pragma mark 执行触发的方法
+
+- (void)event:(UITapGestureRecognizer *)gesture
+{
+    if (self.block) {
+        self.block(self);
+    }
+}
+
+//实现block回调的方法
+- (void)addClickAction:(clickBlock)block {
+    self.block = block;
+}
+- (void)buttonAction {
+   
+}
+
 @end
